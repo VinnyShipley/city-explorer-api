@@ -37,8 +37,6 @@ app.get('/', (request, response) => {
 //pulling info from the browser to display on the font end
 app.get('/weather', (request, response) => {
   let cityFromRequest = request.query.city_name;
-  let latFromRequest = request.query.lat;
-  let lonFromRequest = request.query.lon;
   let selectedCity = weatherData.find((city) => city.city_name.toLowerCase() === cityFromRequest.toLowerCase());
   // let selectedLon = weatherData.find((lon) => lon.lon === lonFromRequest);
   // let selectedLat = weatherData.find((lat) => lat.lat === latFromRequest);
