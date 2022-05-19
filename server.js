@@ -5,8 +5,10 @@
 //instantiates express on the page
 const express = require('express');
 
-//Bringing in the data from the weather.json file
-let weatherData = require('./data/weather.json');
+const axios = require('axios');
+
+//Bringing in the data from the LOCAL weather.json file
+// let weatherData = require('./data/weather.json');
 
 //instantiates dotenv on the page
 require('dotenv').config();
@@ -35,14 +37,18 @@ app.get('/', (request, response) => {
 });
 
 //pulling info from the browser to display on the font end
-app.get('/weather', (request, response) => {
-  let cityFromRequest = request.query.city_name;
-  let selectedCity = weatherData.find((city) => city.city_name.toLowerCase() === cityFromRequest.toLowerCase());
-  // let selectedLon = weatherData.find((lon) => lon.lon === lonFromRequest);
-  // let selectedLat = weatherData.find((lat) => lat.lat === latFromRequest);
-  // let sentData = [selectedLon, selectedCity, selectedLat];
-  let dataToSend =  selectedCity.data.map(city => new Forecast(city));
-  response.send(dataToSend);
+app.get('/weather', async (request, response) => {
+  let city_name = request.query.city_name;
+  console.log(city_name);
+  try {
+    let weatherApiUrl = `https://api.weatherbit.io/v2.0/forecast/daily?city=${city_name}&key=${process.env.WEATHER_BIT_API_KEY}`;
+    let weatherApiUrlInfo = await axios.get(weatherApiUrl);
+    let pulledData = weatherApiUrlInfo.data.data;
+    console.log(pulledData);
+    let dataToSend = pulledData.map(city => new Forecast(city));
+    console.log(dataToSend);
+    response.send(dataToSend);
+  } catch (error) {console.log('error')}
 });
 
 
@@ -56,11 +62,9 @@ app.get('*', (request, response) => {
 
 //Classes
 class Forecast {
-  constructor(barf){
-    this.date = barf.valid_date;
-    this.description = barf.weather.description;
-    this.lat = barf.lat;
-    this.lon = barf.lon;
+  constructor(city) {
+    this.date = city.valid_date;
+    this.description = city.weather.description;
   }
 }
 
@@ -68,4 +72,3 @@ class Forecast {
 //Listen
 //starts the server. Listen is a method natively available on express. Needs to args: port value(which is defined as PORT which is pulled from the .env file) and a callback function
 app.listen(PORT, () => console.log(`listening on port ${PORT}`));
-
