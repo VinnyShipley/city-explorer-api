@@ -24,6 +24,8 @@ The app uses React, LocationIQ API, Express, and Nodemon
 
 Elizabeth Hammes and Vinny Shipley created the API wireframe shown here: ![API wireframe](img/Local-server-snip.png "API wireframe")
 
+Yu-Wei Hsieh and Vinny Shipley created teh API wireframe shown here: ![Lab 8 Wireframe](img/Lab-08-wireframe.png)
+
 ### Lab 07
 
 Name of feature: Setting up Local Server
