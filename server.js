@@ -11,12 +11,18 @@ let weatherData = require('./data/weather.json');
 //instantiates dotenv on the page
 require('dotenv').config();
 
+// instantiates cors
+const cors = require('cors');
 
 //Use. Once acquired, use it. This is where the required gets a file name by way of being put in a variable
+
+
 
 //bringing the ability to use express into the page
 const app = express();
 
+//middleware
+app.use(cors());
 //defining the port location on the page
 const PORT = process.env.PORT || 3002;
 
@@ -30,9 +36,14 @@ app.get('/', (request, response) => {
 
 //pulling info from the browser to display on the font end
 app.get('/weather', (request, response) => {
-  let cityFromRequest = request.query.name;
-  let selectedCity = weatherData.find((city) => city.city_name === cityFromRequest);
-  let dataToSend =  new Forecast(selectedCity);
+  let cityFromRequest = request.query.city_name;
+  let latFromRequest = request.query.lat;
+  let lonFromRequest = request.query.lon;
+  let selectedCity = weatherData.find((city) => city.city_name.toLowerCase() === cityFromRequest.toLowerCase());
+  // let selectedLon = weatherData.find((lon) => lon.lon === lonFromRequest);
+  // let selectedLat = weatherData.find((lat) => lat.lat === latFromRequest);
+  // let sentData = [selectedLon, selectedCity, selectedLat];
+  let dataToSend =  selectedCity.data.map(city => new Forecast(city));
   response.send(dataToSend);
 });
 
@@ -47,9 +58,11 @@ app.get('*', (request, response) => {
 
 //Classes
 class Forecast {
-  constructor(forecasts){
-    this.date = forecasts.date;
-    this.description = forecasts.description;
+  constructor(barf){
+    this.date = barf.valid_date;
+    this.description = barf.weather.description;
+    this.lat = barf.lat;
+    this.lon = barf.lon;
   }
 }
 
