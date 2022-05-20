@@ -39,14 +39,11 @@ app.get('/', (request, response) => {
 //pulling info from the browser to display on the font end
 app.get('/weather', async (request, response) => {
   let city_name = request.query.city_name;
-  console.log(city_name);
   try {
-    let weatherApiUrl = `https://api.weatherbit.io/v2.0/forecast/daily?city=${city_name}&key=${process.env.WEATHER_BIT_API_KEY}`;
+    let weatherApiUrl = `https://api.weatherbit.io/v2.0/forecast/daily?days=5&city=${city_name}&key=${process.env.WEATHER_BIT_API_KEY}`;
     let weatherApiUrlInfo = await axios.get(weatherApiUrl);
     let pulledData = weatherApiUrlInfo.data.data;
-    console.log(pulledData);
     let dataToSend = pulledData.map(city => new Forecast(city));
-    console.log(dataToSend);
     response.send(dataToSend);
   } catch (error) {console.log('error')}
 });
