@@ -44,10 +44,18 @@ app.get('/weather', async (request, response) => {
     let weatherApiUrlInfo = await axios.get(weatherApiUrl);
     let pulledData = weatherApiUrlInfo.data.data;
     let dataToSend = pulledData.map(city => new Forecast(city));
+    console.log('hi');
     response.send(dataToSend);
-  } catch (error) {console.log('error')}
+  } catch (error) {console.log('error');}
 });
 
+app.get('/movies', async (req, res) => {
+  let searchedCity = req.query.city_name;
+  let url = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.TMDB_API_KEY}&query=${searchedCity}`;
+  let movieInfo = await axios.get(url);
+  let dataToSend = movieInfo.data.results.map( movie => new Movie (movie));
+  res.send(dataToSend);
+});
 
 //CatchAll * route, 404
 app.get('*', (request, response) => {
@@ -65,7 +73,17 @@ class Forecast {
   }
 }
 
+class Movie {
+  constructor(movie) {
+    this.title = movie.title;
+    this.description = movie.overview;
+    this.release = movie.release_date;
+    this.score = movie.vote_average;
+
+  }
+}
+
 
 //Listen
-//starts the server. Listen is a method natively available on express. Needs to args: port value(which is defined as PORT which is pulled from the .env file) and a callback function
+//starts the server. Listen is a method natively available on express. Needs to args: port value which is defined as PORT which is pulled from the .env file and a callback function
 app.listen(PORT, () => console.log(`listening on port ${PORT}`));
