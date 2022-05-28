@@ -35,7 +35,7 @@ const PORT = process.env.PORT || 3002;
 app.get('/', (request, response) => {
   response.send(`This is the ${PORT} page`);
 });
-
+console.log('hi line 38');
 //pulling info from the browser to display on the font end
 app.get('/weather', async (request, response) => {
   let city_name = request.query.city_name;
